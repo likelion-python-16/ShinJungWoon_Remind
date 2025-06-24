@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Document</title>
-</head>
+<html>
 <body>
-      <div><a href="index.html">홈으로</a></div>
+
+<input type="text" id="userInput" placeholder="입력하면 글 나옵니다.">
+<p id="displayText" ></p>
+<br>
+<div><a href="index.html">홈으로</a></div>
+<script>
+document.getElementById("userInput").addEventListener("input", function () {
+  document.getElementById("displayText").textContent = this.value;
+});
+</script>
+
 </body>
-</html>
+</html> 
