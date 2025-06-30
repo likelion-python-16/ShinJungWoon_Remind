@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<input type="text" id="userInput" placeholder="입력하면 글 나옵니다.">
+<p id="displayText" ></p>
+<br>
+<div><a href="index.html">홈으로</a></div>
+<script>
+document.getElementById("userInput").addEventListener("input", function () {
+  document.getElementById("displayText").textContent = this.value;
+});
+</script>
+
+</body>
+</html> 
