@@ -112,3 +112,4 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 ![header.html](images/header_html.png)
 ![settings.py](images/settings_py.png)
 
+...
