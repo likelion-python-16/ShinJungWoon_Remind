@@ -1,0 +1,87 @@
+<button class="social-btn commentToggleBtn"><span class="icon">💬</span><span class="count">${todo.comment_count || 0}</span></button>
+
+<div class="commentBox" style="display:none;">
+    <ul class="commentList"></ul>
+    <input type="text" class="commentInput" placeholder="댓글을 입력하세요">
+    <button class="commentSubmit">등록</button>
+</div>
+
+<script>    
+// 댓글 등록 버튼
+div.querySelector('.commentSubmit').addEventListener('click', e => {
+    e.stopPropagation();
+    const commentInput = div.querySelector('.commentInput');
+    const content = commentInput.value;
+    if (content.trim()) {
+        postComment(todo.id, content);
+        commentInput.value = '';
+    }
+});
+
+// 댓글 토글 버튼
+div.querySelector('.commentToggleBtn').addEventListener('click', e => {
+    e.stopPropagation();
+    const commentBox = div.querySelector('.commentBox');
+    commentBox.style.display = (commentBox.style.display === 'none') ? 'block' : 'none';
+    loadComments(todo.id, div.querySelector('.commentList'));
+});
+
+
+// 댓글 입력창 클릭 시, 상위 div 클릭 이벤트(상세페이지 이동)를 막는다
+div.querySelector('.commentInput')
+    .addEventListener('click', e => e.stopPropagation());
+
+
+// 댓글 등록 함수
+function postComment(todoId, content) {
+  if (!content) return alert("댓글을 입력하세요");
+  axiosInstance.post("/api/interaction/comments/", { todo_pk: todoId, content: content })
+    .then(() => {
+      loadComments(todoId, document.querySelector('.commentList'));
+    })
+    .catch(error => {
+      console.error(" 댓글 등록 실패:", error.response?.data || error);
+      alert(" 댓글 등록 실패:\n" + JSON.stringify(error.response?.data, null, 2));
+    });
+}
+
+// 댓글 목록 로딩 함수
+function loadComments(todoId, listElement) {
+  axiosInstance.get(`/api/interaction/comments/`, { params: { todo_pk: todoId } })
+    .then(res => {
+      const payload = Array.isArray(res.data) ? res.data : Array.isArray(res.data.results) ? res.data.results : (res.data.data || []);
+      /*
+      위 코드는 조건문이 두 개 연결되어 있는 형태
+      if (Array.isArray(res.data)) {
+          payload = res.data;
+      } else if (Array.isArray(res.data.results)) {
+          payload = res.data.results;
+      } else {
+          payload = res.data.data || [];
+      }
+      */
+      listElement.innerHTML = '';
+      payload.forEach(c => {
+        const li = document.createElement('li');
+        li.innerHTML = `${c.user.username || c.username}: ${c.content} 
+          <button class="comment-like-btn" data-id="${c.id}">👍 ${c.like_count}</button>`;
+        li.querySelector('.comment-like-btn')?.addEventListener('click', e => {
+          e.stopPropagation();
+          toggleCommentLike(c.id);
+        });
+        listElement.appendChild(li);
+      });
+    })
+    .catch(err => console.error('댓글 로드 실패:', err));
+}
+
+// 댓글 좋아요 토글 함수
+function toggleCommentLike(commentId) {
+  axiosInstance.post(`/api/interaction/commentlikes/${commentId}/toggle/`)
+    .then(res => {
+      const btn = document.querySelector(`.comment-like-btn[data-id="${commentId}"]`);
+      if (btn) btn.innerHTML = `👍 ${res.data.like_count}`;
+    })
+    .catch(err => console.error("댓글 좋아요 실패:", err));
+}
+</script>

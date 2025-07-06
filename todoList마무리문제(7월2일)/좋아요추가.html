@@ -1,0 +1,25 @@
+<button class="social-btn likeBtn" data-id="${todo.id}"><span class="icon">${todo.is_liked ? '💔' : '❤️'}</span> <span class="count">${todo.like_count}</span></button>
+
+
+<script>
+// 좋아요 버튼 이벤트 등록    
+div.querySelectorAll('.likeBtn').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        toggleLike(btn.dataset.id); // "data-id" 속성에 담긴 값을 인자로 전달해서 toggleLike() 함수를 실행하라.
+    });
+});
+
+// 좋아요 토글 함수
+function toggleLike(id) {
+    axiosInstance.post(`/api/interaction/likes/${id}/toggle/`)
+        .then(res => {
+            const { is_liked, like_count } = res.data;
+            const btn = document.querySelector(`.likeBtn[data-id="${id}"]`);
+            if (btn) btn.innerHTML = `${is_liked ? '💔' : '❤️'} <span class="count">${like_count}</span>`;
+        })
+        .catch(err => console.error(" 좋아요 토글 실패:", err));
+}
+
+</script>
+    

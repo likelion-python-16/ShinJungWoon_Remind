@@ -1,0 +1,20 @@
+<button class="social-btn bookmarkBtn" data-id="${todo.id}"><span class="icon">🔖</span><span class="count">${todo.bookmark_count}</span></button>
+
+<script>
+// 북마크 버튼 이벤트 등록    
+div.querySelector('.bookmarkBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    toggleBookmark(btn.dataset.id); 
+});
+
+// 북마크 토글 함수
+function toggleBookmark(id) {
+    axiosInstance.post(`/api/interaction/bookmarks/${id}/toggle/`)
+        .then(res => {
+            const { is_bookmarked, bookmark_count } = res.data;
+            const btn = document.querySelector(`.bookmarkBtn[data-id="${id}"]`);
+            if (btn) btn.innerHTML = `🔖 <span class="count">${bookmark_count}</span>`;
+        })
+        .catch(err => console.error(' 북마크 토글 실패:', err));
+}
+</script>

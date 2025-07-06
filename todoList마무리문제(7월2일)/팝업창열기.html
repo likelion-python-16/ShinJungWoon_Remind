@@ -1,0 +1,15 @@
+<button class="social"><a href="/interaction/todo/detail/${todo.id}/" target="_blank" class="detail-link">MY댓글</a></button>
+
+<script>
+// 새창 링크의 이벤트 전파 차단    
+div.querySelector('.detail-link')?.addEventListener('click', e => {
+e.stopPropagation(); // 상위 div 클릭 이벤트 막기
+
+    // 새창 열기 (크기와 위치 지정)
+    window.open(
+        `/interaction/todo/detail/${todo.id}/`, // 열 URL
+        '_blank', // 새창
+        'width=600,height=600,top=100,left=200,scrollbars=yes,resizable=yes' // 옵션
+        ); 
+});  
+</script>
